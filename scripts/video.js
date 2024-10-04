@@ -26,6 +26,13 @@ const loadVideos = () => {
     .catch((error) => console.log(error));
 };
 
+const loadcategoryVideos = (id) => {
+    fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
+    .then((res) => res.json())
+    .then((data) => displayVideos(data.category))
+    .catch((error) => console.log(error));
+}
+
 // Create Display Categories
 const diplayCategories = (categories) => {
   const categoryContainer = document.getElementById("categories");
@@ -33,18 +40,22 @@ const diplayCategories = (categories) => {
   categories.forEach((item) => {
     console.log(item);
     //create a button
-    const button = document.createElement("button");
-    button.classList = "btn";
-    button.innerText = item.category;
+    const buttonContainer = document.createElement("div");
+    buttonContainer.innerHTML = `
+        <button onclick="loadcategoryVideos(${item.category_id})" class="btn">
+            ${item.category}
+        </button>
+    `
 
     //add button to category container
-    categoryContainer.appendChild(button);
+    categoryContainer.appendChild(buttonContainer);
   });
 };
 
 // Create Display Videos
 const displayVideos = (videos) => {
   const videoContainer = document.getElementById("videos");
+  videoContainer.innerHTML = ""
   videos.forEach((videos) => {
     console.log(videos);
     const card = document.createElement("div");
@@ -56,7 +67,7 @@ const displayVideos = (videos) => {
         ${
           videos.others.posted_date?.length == 0
             ? ""
-            : `<span class="absolute right-2 bottom-2 bg-black rounded p-1 text-white">${getTimeString(videos.others.posted_date)}</span>`
+            : `<span class="absolute right-2 bottom-2 text-xs bg-black rounded p-1 text-white">${getTimeString(videos.others.posted_date)}</span>`
         }
         
   </figure>
